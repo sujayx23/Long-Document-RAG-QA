@@ -366,21 +366,33 @@ def find_pdf_file():
 def main():
     # Parse command line arguments
     parser = argparse.ArgumentParser(description='Process PDF and build QA index')
-    parser.add_argument('--pdf', type=str, help='Path to PDF file')
+    parser.add_argument('--pdf', type=str, default='longformer.pdf', help='Path to PDF file (default: longformer.pdf)')
     parser.add_argument('--chunk-size', type=int, default=500, help='Maximum tokens per chunk')
     parser.add_argument('--overlap', type=int, default=100, help='Overlap between chunks')
     args = parser.parse_args()
     
-    # Determine PDF file
-    if args.pdf:
-        pdf_path = args.pdf
-        if not os.path.exists(pdf_path):
-            print(f"Error: PDF file '{pdf_path}' not found")
+    # Use longformer.pdf as default
+    pdf_path = args.pdf
+    
+    # Check if PDF exists
+    if not os.path.exists(pdf_path):
+        print(f"Error: PDF file '{pdf_path}' not found")
+        
+        # If default file not found, look for any PDF
+        if pdf_path == 'longformer.pdf':
+            pdf_files = [f for f in os.listdir('.') if f.lower().endswith('.pdf')]
+            if pdf_files:
+                print(f"\nFound PDF files: {pdf_files}")
+                if len(pdf_files) == 1:
+                    pdf_path = pdf_files[0]
+                    print(f"Using: {pdf_path}")
+                else:
+                    pdf_path = find_pdf_file()
+            else:
+                print("No PDF files found in current directory")
+                return
+        else:
             return
-    else:
-        pdf_path = find_pdf_file()
-    if not pdf_path:
-        return
     
     print(f"Extracting text from {pdf_path} with advanced cleaning...")
     
