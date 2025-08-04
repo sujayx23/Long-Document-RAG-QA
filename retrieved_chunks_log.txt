@@ -1,0 +1,80 @@
+TESTING FINAL RAG SYSTEM
+================================================================================
+
+Level 1
+--------------------------------------------------------------------------------
+
+Q1: What BPC did Longformer achieve on text8 dataset?
+A1: with/without dilation (@ 150 K steps on phase 1) Table 5: 5 MLM BPC for RoBERTa and various pretrained Longformer configurations. Bottom: with/without dilation (@ 150 K steps on phase 1) Table 5: 5 MLM BPC for RoBERTa and various pretrained Longformer configurations. Bottom: with/without dilation (@ 150 K steps on phase 1) Table 5: 5 MLM BPC for Ro 
+Time: 26.40s
+
+Q2: How many tokens can Longformer process compared to BERT's 512 limit?
+A2: 4,096 tokens (8 times BERT's 512) 
+Time: 7.96s
+
+Q3: What window size does Longformer use for local attention?
+A3: 512 
+Time: 7.32s
+
+Level 2
+--------------------------------------------------------------------------------
+
+Q1: How does Longformer's memory usage compare to full self-attention as sequence length increases?
+A1: Longformer: O(n) linear memory scaling Full self-attention: O(n²) quadratic memory scaling 
+Time: 7.24s
+
+Q2: What are the key differences between sliding window and dilated sliding window attention?
+A2: We do not use dilated sliding windows for lower layers to maximize their capacity to learn and utilize the immediate local context. attention Pattern Sliding Window Given the importance of local context (Kovaleva et al., 2019) (Wu et al., 2019) 2 b Dilated Sliding Window To further increase the receptive field without increasing computation, the sliding window can be "dilated" for Longformer 
+Time: 22.20s
+
+Q3: How does Longformer initialize position embeddings beyond RoBERTa's 512 limit?
+A3: Copies RoBERTa's 512 position embeddings multiple times 
+Time: 7.87s
+
+Level 3
+--------------------------------------------------------------------------------
+
+Q1: How do the character-level language modeling results relate to the downstream task performance improvements?
+A1: This task is considered one of the fundamental tasks in natural language and recent prior work on modeling long sequences using transformers has relied on this task as their primary evaluation (Dai et al., 2019; Rae et al., 2020; Sukhbaatar et al., 2019) attention Pattern for autoregressive language modeling we use our dilated sliding window attention. 
+Time: 19.98s
+
+Q2: What is the relationship between Longformer's attention pattern design and its computational efficiency gains?
+A2: this section discusses the design and implementation of this attention pattern. this section discusses the design and implementation of this attention pattern. this section discusses the design and implementation of this attention pattern. this section discusses the design and implementation of this attention pattern. 
+Time: 14.81s
+
+Q3: How does the staged training procedure for character LM connect to the pretraining approach for downstream tasks?
+A3: To accommodate this, we adopt a staged training procedure where we increase the attention window size and sequence length across multiple training phases. experiment Setup To compare to prior work we focus on characterlevel LM (text8 and enwik8; Mahoney, 2009) training Ideally, we would like to train our model on the largest window size and sequence length we can fit in a modern GPU memory. the dataset does not provide any intermediate annotation for the multi 
+Time: 20.71s
+
+Level 4
+--------------------------------------------------------------------------------
+
+Q1: What evidence supports that both local and global attention components are essential for Longformer's performance?
+A1: Ablation studies show both attention types are essential 
+Time: 7.73s
+
+Q2: How do the ablation study results validate the architectural choices made in Longformer's design?
+A2: To show the importance of the design choices of our attention patterns, we tried different variants and report their controlled experiment results. To make the ablation study more manageable, we train each configuration for 150 K steps 4 with phase 1 configuration on a small model on text8, then report the BPC performance on the dev set. 8 shows that our Longformer-large achieves new state-of-the-art results 9 on Wiki Hop and Trivia QA by 
+Time: 19.55s
+
+Q3: What are the computational trade-offs between different Longformer implementations (loop vs chunks vs CUDA)?
+A3: Longformer-loop is a naive implementation that computes each diagonal separately in a loop. It is memory efficient because it only computes the non-zero values, but it is unusably slow. We only use it for testing because it is easy to implement but don't use it to run experiments. Longformer-chunks only supports the nondilated case. It chunks Q and K into overlapping blocks of size 
+Time: 24.07s
+
+Level 5
+--------------------------------------------------------------------------------
+
+Q1: Based on the experimental setup and results, what are the potential limitations of Longformer for real-time applications?
+A1: Key limitations: - It is memory efficient because it only computes the non-zero values, but it is unusably slow. - It is memory efficient because it only computes the non-zero values, but it is unusably slow. 
+Time: 8.17s
+
+Q2: How might the evaluation methodology bias the conclusions about Longformer's effectiveness compared to other approaches?
+A2: We then keep up to 5 paragraphs whose raw score is higher than a pre-specified threshold (-3.0), and remove the other paragraphs from the context. 
+Time: 12.07s
+
+Q3: What aspects of long document understanding are NOT adequately addressed by Longformer's approach?
+A3: Autoregressive language modeling (LM), while the application of long document transformers to documentlevel NLP tasks in the transfer learning setting (Dai and Le, 2015; Peters et al., 2018; Howard and Ruder, 2018; Devlin et al., 2019) Longformer's attention mechanism is a combination of a windowed local-context self-attention and an end task motivated global attention that encode 
+Time: 22.35s
+
+================================================================================
+Test complete. Results saved to final_test_results.txt

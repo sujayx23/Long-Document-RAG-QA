@@ -1,0 +1,76 @@
+level,description,control_variable,question_num,question,answer,rating,duration_sec,debug_info
+1,Single Chunk Information,Answer exists in one contiguous text chunk,1,What BPC did Longformer achieve on text8 dataset?,"ERROR: Traceback (most recent call last):
+  File ""/Users/nithishsujay/qa_proto_env/qa_pipeline.py"", line 4, in <module>
+    import torch
+ModuleNotFoundError: No module named 'torch'
+",FAIL,0.03,
+1,Single Chunk Information,Answer exists in one contiguous text chunk,2,How many tokens can Longformer process compared to BERT's 512 limit?,"ERROR: Traceback (most recent call last):
+  File ""/Users/nithishsujay/qa_proto_env/qa_pipeline.py"", line 4, in <module>
+    import torch
+ModuleNotFoundError: No module named 'torch'
+",FAIL,0.02,
+1,Single Chunk Information,Answer exists in one contiguous text chunk,3,What window size does Longformer use for local attention?,"ERROR: Traceback (most recent call last):
+  File ""/Users/nithishsujay/qa_proto_env/qa_pipeline.py"", line 4, in <module>
+    import torch
+ModuleNotFoundError: No module named 'torch'
+",FAIL,0.02,
+2,Adjacent Chunks Information,Answer requires 2-3 neighboring chunks,1,How does Longformer's memory usage compare to full self-attention as sequence length increases?,"ERROR: Traceback (most recent call last):
+  File ""/Users/nithishsujay/qa_proto_env/qa_pipeline.py"", line 4, in <module>
+    import torch
+ModuleNotFoundError: No module named 'torch'
+",FAIL,0.02,
+2,Adjacent Chunks Information,Answer requires 2-3 neighboring chunks,2,What are the key differences between sliding window and dilated sliding window attention?,"ERROR: Traceback (most recent call last):
+  File ""/Users/nithishsujay/qa_proto_env/qa_pipeline.py"", line 4, in <module>
+    import torch
+ModuleNotFoundError: No module named 'torch'
+",FAIL,0.02,
+2,Adjacent Chunks Information,Answer requires 2-3 neighboring chunks,3,How does Longformer initialize position embeddings beyond RoBERTa's 512 limit?,"ERROR: Traceback (most recent call last):
+  File ""/Users/nithishsujay/qa_proto_env/qa_pipeline.py"", line 4, in <module>
+    import torch
+ModuleNotFoundError: No module named 'torch'
+",FAIL,0.02,
+3,Distant Chunks Information,Answer requires 3-5 chunks from different document sections,1,How do the character-level language modeling results relate to the downstream task performance improvements?,"ERROR: Traceback (most recent call last):
+  File ""/Users/nithishsujay/qa_proto_env/qa_pipeline.py"", line 4, in <module>
+    import torch
+ModuleNotFoundError: No module named 'torch'
+",FAIL,0.02,
+3,Distant Chunks Information,Answer requires 3-5 chunks from different document sections,2,What is the relationship between Longformer's attention pattern design and its computational efficiency gains?,"ERROR: Traceback (most recent call last):
+  File ""/Users/nithishsujay/qa_proto_env/qa_pipeline.py"", line 4, in <module>
+    import torch
+ModuleNotFoundError: No module named 'torch'
+",FAIL,0.02,
+3,Distant Chunks Information,Answer requires 3-5 chunks from different document sections,3,How does the staged training procedure for character LM connect to the pretraining approach for downstream tasks?,"ERROR: Traceback (most recent call last):
+  File ""/Users/nithishsujay/qa_proto_env/qa_pipeline.py"", line 4, in <module>
+    import torch
+ModuleNotFoundError: No module named 'torch'
+",FAIL,0.02,
+4,Cross-Section Analysis,"Answer requires synthesis across methodology, results, and discussion sections",1,What evidence supports that both local and global attention components are essential for Longformer's performance?,"ERROR: Traceback (most recent call last):
+  File ""/Users/nithishsujay/qa_proto_env/qa_pipeline.py"", line 4, in <module>
+    import torch
+ModuleNotFoundError: No module named 'torch'
+",FAIL,0.02,
+4,Cross-Section Analysis,"Answer requires synthesis across methodology, results, and discussion sections",2,How do the ablation study results validate the architectural choices made in Longformer's design?,"ERROR: Traceback (most recent call last):
+  File ""/Users/nithishsujay/qa_proto_env/qa_pipeline.py"", line 4, in <module>
+    import torch
+ModuleNotFoundError: No module named 'torch'
+",FAIL,0.02,
+4,Cross-Section Analysis,"Answer requires synthesis across methodology, results, and discussion sections",3,What are the computational trade-offs between different Longformer implementations (loop vs chunks vs CUDA)?,"ERROR: Traceback (most recent call last):
+  File ""/Users/nithishsujay/qa_proto_env/qa_pipeline.py"", line 4, in <module>
+    import torch
+ModuleNotFoundError: No module named 'torch'
+",FAIL,0.02,
+5,Document-Wide Reasoning,"Answer requires understanding limitations, methodology, and broader implications",1,"Based on the experimental setup and results, what are the potential limitations of Longformer for real-time applications?","ERROR: Traceback (most recent call last):
+  File ""/Users/nithishsujay/qa_proto_env/qa_pipeline.py"", line 4, in <module>
+    import torch
+ModuleNotFoundError: No module named 'torch'
+",FAIL,0.02,
+5,Document-Wide Reasoning,"Answer requires understanding limitations, methodology, and broader implications",2,How might the evaluation methodology bias the conclusions about Longformer's effectiveness compared to other approaches?,"ERROR: Traceback (most recent call last):
+  File ""/Users/nithishsujay/qa_proto_env/qa_pipeline.py"", line 4, in <module>
+    import torch
+ModuleNotFoundError: No module named 'torch'
+",FAIL,0.02,
+5,Document-Wide Reasoning,"Answer requires understanding limitations, methodology, and broader implications",3,What aspects of long document understanding are NOT adequately addressed by Longformer's approach?,"ERROR: Traceback (most recent call last):
+  File ""/Users/nithishsujay/qa_proto_env/qa_pipeline.py"", line 4, in <module>
+    import torch
+ModuleNotFoundError: No module named 'torch'
+",FAIL,0.02,

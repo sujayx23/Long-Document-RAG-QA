@@ -1,0 +1,40 @@
+IMPROVED RAG SYSTEM TEST REPORT
+================================================================================
+Test Date: 2025-07-28 11:25:17
+
+Overall Success Rate: 2/5 (40.0%)
+
+DETAILED RESULTS:
+--------------------------------------------------------------------------------
+
+Level 1: What window size does Longformer use for local attention?
+Status: ✓ SUCCESS
+Answer: attention Pattern We use sliding window attention with window size of 512, therefore using the same amount of computation as RoBERTa.
+Chunks Retrieved: 10
+Facts Found: 15
+Time: 13.24s
+
+Level 2: What are the key differences between sliding window and dilated sliding window attention?
+Status: ✓ SUCCESS
+Answer: for Longformer, the dilated sliding window attention computes only a fixed number of the diagonals of QK T. As shown in Fig.
+Chunks Retrieved: 10
+Facts Found: 15
+Time: 11.02s
+
+Level 2: How does Longformer's memory usage compare to full self-attention as sequence length increases?
+Status: ✗ FAILED
+Answer: Unable to find specific answer in the documents.
+Issue: Missing expected content
+
+Level 3: How do the character-level language modeling results relate to the downstream task performance improvements?
+Status: ✗ FAILED
+Answer: Unable to find specific answer in the documents.
+Issue: Missing expected content
+
+Level 3: How does the staged training procedure for character LM connect to the pretraining approach for downstream tasks?
+Status: ✗ FAILED
+Answer: Unable to find specific answer in the documents.
+Issue: Missing expected content
+
+================================================================================
+END OF REPORT

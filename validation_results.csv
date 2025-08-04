@@ -1,0 +1,11 @@
+level,question,answer,mode_used,success_rating
+1,What results did Longformer achieve on text8 and enwik8?,ERROR: Pipeline failed,gen_with_fallback,FAIL
+1,What does Longformer's attention mechanism combine?,ERROR: Pipeline failed,gen_with_fallback,FAIL
+2,What happens to self-attention operation with sequence length?,ERROR: Pipeline failed,gen_with_fallback,FAIL
+2,What does Longformer consistently outperform on long document tasks?,ERROR: Pipeline failed,gen_with_fallback,FAIL
+3,Why is the combination of local and global attention effective for long documents?,ERROR: Pipeline failed,gen_with_fallback,FAIL
+3,What challenges do existing transformer models face with very long sequences?,ERROR: Pipeline failed,gen_with_fallback,FAIL
+4,How does Longformer's performance scale as document length increases?,ERROR: Pipeline failed,gen_with_fallback,FAIL
+4,What are the trade-offs between Longformer's different attention patterns?,ERROR: Pipeline failed,gen_with_fallback,FAIL
+5,How could Longformer be adapted for real-time processing of streaming documents?,ERROR: Pipeline failed,gen_with_fallback,FAIL
+5,What implications does Longformer have for the future of document understanding AI?,ERROR: Pipeline failed,gen_with_fallback,FAIL

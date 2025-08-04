@@ -1,0 +1,50 @@
+# Virtual environment
+bin/
+include/
+lib/
+pyvenv.cfg
+qa_proto_env/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+
+# Model files and data
+*.pkl
+*.index
+*.pdf
+*.pt
+*.safetensors
+*.bin
+*.dylib
+
+# Logs and temporary files
+*.log
+*.zip
+*.tmp
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Large model checkpoints (keep only essential ones)
+finetuned_qa/checkpoint-*/
+finetuned_retriever/checkpoint-*/
+checkpoints/model/eval/
+
+# Keep only the final models
+!finetuned_qa/config.json
+!finetuned_qa/tokenizer.json
+!finetuned_qa/vocab.json
+!finetuned_retriever/config.json
+!finetuned_retriever/tokenizer.json
