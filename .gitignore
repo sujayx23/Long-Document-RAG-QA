@@ -14,13 +14,15 @@ __pycache__/
 *.so
 
 # Model files and data
-*.pkl
-*.index
 *.pdf
 *.pt
 *.safetensors
 *.bin
 *.dylib
+
+# Allow essential data files
+!*.pkl
+!*.index
 
 # Logs and temporary files
 *.log

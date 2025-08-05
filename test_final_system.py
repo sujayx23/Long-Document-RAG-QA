@@ -1,10 +1,19 @@
 #!/usr/bin/env python3
 """
-Test the final RAG system on all 15 questions
+Test the final RAG system on all 15 questions with timeout handling
 """
 
 import subprocess
 import time
+import sys
+import signal
+
+# Define timeout handler
+class TimeoutException(Exception):
+    pass
+
+def timeout_handler(signum, frame):
+    raise TimeoutException()
 
 questions = {
     "Level 1": [
@@ -34,50 +43,97 @@ questions = {
     ]
 }
 
-def test_question(question):
-    """Test a single question"""
+def test_question(question, timeout_seconds=30):
+    """Test a single question with timeout"""
     cmd = ['python3', 'final_rag_pipeline.py', question]
     
     try:
-        proc = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
+        # Set up timeout
+        signal.signal(signal.SIGALRM, timeout_handler)
+        signal.alarm(timeout_seconds)
+        
+        start_time = time.time()
+        proc = subprocess.run(cmd, capture_output=True, text=True)
+        elapsed = time.time() - start_time
+        
+        # Cancel the alarm
+        signal.alarm(0)
+        
         if proc.returncode == 0:
             # Extract answer from output
             lines = proc.stdout.strip().split('\n')
             answer = None
-            for i, line in enumerate(lines):
+            collecting = False
+            answer_lines = []
+            
+            for line in lines:
                 if line.startswith("A:"):
-                    answer = line[2:].strip()
-                    # Check if answer continues on next lines
-                    j = i + 1
-                    while j < len(lines) and not lines[j].startswith(("Q:", "Final Answer:")):
-                        answer += " " + lines[j].strip()
-                        j += 1
+                    collecting = True
+                    answer_lines.append(line[2:].strip())
+                elif line.startswith("Final Answer:"):
+                    # Alternative format
+                    answer = line.replace("Final Answer:", "").strip()
                     break
-            return answer if answer else "No answer found"
+                elif collecting and line.startswith(("Q:", "Chunks analyzed:")):
+                    # Stop collecting
+                    break
+                elif collecting:
+                    # Continue collecting multi-line answer
+                    answer_lines.append(line.strip())
+            
+            if not answer and answer_lines:
+                answer = " ".join(answer_lines)
+            
+            return answer if answer else "No answer found", elapsed
         else:
-            return f"Error: {proc.stderr}"
-    except subprocess.TimeoutExpired:
-        return "Timeout"
+            return f"Error: {proc.stderr}", elapsed
+            
+    except TimeoutException:
+        # Kill the subprocess if it's still running
+        try:
+            proc.terminate()
+        except:
+            pass
+        return "Timeout", timeout_seconds
+    except Exception as e:
+        return f"Error: {str(e)}", 0
+
+def format_answer(answer, max_length=100):
+    """Format answer for display"""
+    if len(answer) > max_length:
+        return answer[:max_length] + "..."
+    return answer
 
 def main():
-    print("TESTING FINAL RAG SYSTEM")
+    print("TESTING IMPROVED RAG SYSTEM")
     print("="*80)
     
     all_results = []
+    total_questions = sum(len(qs) for qs in questions.values())
+    question_num = 0
     
     for level, level_questions in questions.items():
         print(f"\n{level}")
         print("-"*80)
         
         for i, q in enumerate(level_questions, 1):
-            print(f"\nQ{i}: {q}")
+            question_num += 1
+            print(f"\n[{question_num}/{total_questions}] {q}")
             
-            start_time = time.time()
-            answer = test_question(q)
-            elapsed = time.time() - start_time
+            answer, elapsed = test_question(q, timeout_seconds=30)
             
-            print(f"A{i}: {answer}")
+            print(f"Answer: {format_answer(answer, 150)}")
             print(f"Time: {elapsed:.2f}s")
+            
+            # Check answer quality
+            if answer == "Timeout":
+                print("⚠️  TIMEOUT - Question took too long")
+            elif answer.startswith("Error:"):
+                print("❌ ERROR in processing")
+            elif answer == "No answer found" or len(answer) < 10:
+                print("⚠️  POOR ANSWER - Too short or missing")
+            else:
+                print("✓ Answer provided")
             
             all_results.append({
                 'level': level,
@@ -85,16 +141,61 @@ def main():
                 'answer': answer,
                 'time': elapsed
             })
+            
+            # Small delay between questions
+            time.sleep(0.5)
     
-    # Save results
-    with open("final_test_results.txt", "w") as f:
+    # Save detailed results
+    print("\n" + "="*80)
+    print("Saving results...")
+    
+    with open("improved_test_results.txt", "w") as f:
         for r in all_results:
             f.write(f"{r['level']}: {r['question']}\n")
             f.write(f"Answer: {r['answer']}\n")
             f.write(f"Time: {r['time']:.2f}s\n\n")
     
-    print("\n" + "="*80)
-    print("Test complete. Results saved to final_test_results.txt")
+    # Summary statistics
+    timeouts = sum(1 for r in all_results if r['answer'] == "Timeout")
+    errors = sum(1 for r in all_results if r['answer'].startswith("Error:"))
+    poor_answers = sum(1 for r in all_results if len(r['answer']) < 20 and r['answer'] not in ["Timeout", "Error:"])
+    good_answers = total_questions - timeouts - errors - poor_answers
+    
+    print("\nSUMMARY")
+    print("="*80)
+    print(f"Total questions: {total_questions}")
+    print(f"✓ Good answers: {good_answers} ({good_answers/total_questions*100:.1f}%)")
+    print(f"⚠️  Poor answers: {poor_answers} ({poor_answers/total_questions*100:.1f}%)")
+    print(f"⚠️  Timeouts: {timeouts} ({timeouts/total_questions*100:.1f}%)")
+    print(f"❌ Errors: {errors} ({errors/total_questions*100:.1f}%)")
+    
+    avg_time = sum(r['time'] for r in all_results if r['answer'] != "Timeout") / (total_questions - timeouts)
+    print(f"\nAverage response time: {avg_time:.2f}s")
+    
+    print(f"\nResults saved to: improved_test_results.txt")
 
 if __name__ == "__main__":
+    # Check if required files exist
+    required_files = ['final_rag_pipeline.py', 'chunker.py', 'build_index.py']
+    missing_files = [f for f in required_files if not os.path.exists(f)]
+    
+    if missing_files:
+        print("Error: Missing required files:", missing_files)
+        sys.exit(1)
+    
+    # Check for index files
+    index_files = ["expanded_faiss.index", "improved_faiss.index", "new_faiss.index", "faiss.index"]
+    chunk_files = ["expanded_chunks.pkl", "improved_chunks.pkl", "new_chunks.pkl", "chunks.pkl"]
+    
+    has_index = any(os.path.exists(f) for f in index_files)
+    has_chunks = any(os.path.exists(f) for f in chunk_files)
+    
+    if not has_index or not has_chunks:
+        print("Warning: No index files found. Please run build_index.py first.")
+        response = input("Do you want to build the index now? (y/n): ")
+        if response.lower() == 'y':
+            subprocess.run(['python3', 'build_index.py'])
+        else:
+            sys.exit(1)
+    
     main()

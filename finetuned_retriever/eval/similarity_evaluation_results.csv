@@ -1,6 +1,0 @@
-epoch,steps,cosine_pearson,cosine_spearman
-1.0,4,nan,nan
-2.0,8,nan,nan
-3.0,12,nan,nan
-4.0,16,nan,nan
-5.0,20,nan,nan

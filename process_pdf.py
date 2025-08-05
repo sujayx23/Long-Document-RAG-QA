@@ -398,7 +398,7 @@ def main():
     
     # Try PyMuPDF first, fallback to pdfplumber
     try:
-    text = extract_text_with_pymupdf(pdf_path)
+        text = extract_text_with_pymupdf(pdf_path)
     except Exception as e:
         print(f"PyMuPDF failed: {e}, trying pdfplumber...")
         text = extract_text_with_pdfplumber(pdf_path)

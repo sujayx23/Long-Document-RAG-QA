@@ -32,7 +32,75 @@ def clean_sentence(sentence):
     return sentence
 
 def chunk_text(text, max_tokens=500, overlap=100):
-    """Chunk text into overlapping segments with improved sentence boundaries."""
+    """Improved chunking that preserves semantic units"""
+    # First try to split by double newlines (paragraphs)
+    paragraphs = text.split('\n\n')
+    
+    # If no paragraphs, split by single newlines
+    if len(paragraphs) <= 1:
+        paragraphs = text.split('\n')
+    
+    # Clean paragraphs
+    clean_paragraphs = []
+    for para in paragraphs:
+        para = para.strip()
+        if para and len(para) > 50:  # Skip very short paragraphs
+            clean_paragraphs.append(para)
+    
+    if not clean_paragraphs:
+        # Fallback to sentence-based chunking
+        return chunk_by_sentences(text, max_tokens, overlap)
+    
+    chunks = []
+    current_chunk = []
+    current_tokens = 0
+    
+    for para in clean_paragraphs:
+        para_tokens = len(word_tokenize(para))
+        
+        # If paragraph fits in current chunk, add it
+        if current_tokens + para_tokens <= max_tokens:
+            current_chunk.append(para)
+            current_tokens += para_tokens
+        else:
+            # Save current chunk if it has content
+            if current_chunk:
+                chunk_text = '\n\n'.join(current_chunk)
+                if len(chunk_text.split()) >= 50:
+                    chunks.append(chunk_text)
+            
+            # Handle overlap - take last part of current chunk
+            if overlap > 0 and current_chunk:
+                overlap_text = get_overlap_text(current_chunk, overlap)
+                if overlap_text:
+                    current_chunk = [overlap_text]
+                    current_tokens = len(word_tokenize(overlap_text))
+                else:
+                    current_chunk = []
+                    current_tokens = 0
+            else:
+                current_chunk = []
+                current_tokens = 0
+            
+            # Add the paragraph that didn't fit
+            if para_tokens <= max_tokens:
+                current_chunk.append(para)
+                current_tokens += para_tokens
+            else:
+                # Paragraph too big, split by sentences
+                para_chunks = chunk_by_sentences(para, max_tokens, overlap)
+                chunks.extend(para_chunks)
+    
+    # Don't forget the last chunk
+    if current_chunk:
+        chunk_text = '\n\n'.join(current_chunk)
+        if len(chunk_text.split()) >= 50:
+            chunks.append(chunk_text)
+    
+    return chunks
+
+def chunk_by_sentences(text, max_tokens=500, overlap=100):
+    """Chunk text by sentences when paragraph chunking isn't suitable"""
     # Split into sentences
     sentences = sent_tokenize(text)
     
@@ -94,6 +162,37 @@ def chunk_text(text, max_tokens=500, overlap=100):
     
     return chunks
 
+def get_overlap_text(paragraphs, overlap_tokens):
+    """Get text from the end of paragraphs for overlap"""
+    overlap_text = []
+    tokens_collected = 0
+    
+    # Go through paragraphs in reverse
+    for para in reversed(paragraphs):
+        para_tokens = word_tokenize(para)
+        para_token_count = len(para_tokens)
+        
+        if tokens_collected + para_token_count <= overlap_tokens:
+            # Can include whole paragraph
+            overlap_text.insert(0, para)
+            tokens_collected += para_token_count
+        else:
+            # Need partial paragraph
+            tokens_needed = overlap_tokens - tokens_collected
+            if tokens_needed > 0:
+                # Take sentences from the end
+                sentences = sent_tokenize(para)
+                for sent in reversed(sentences):
+                    sent_tokens = len(word_tokenize(sent))
+                    if tokens_collected + sent_tokens <= overlap_tokens:
+                        overlap_text.insert(0, sent)
+                        tokens_collected += sent_tokens
+                    else:
+                        break
+            break
+    
+    return ' '.join(overlap_text) if overlap_text else None
+
 def analyze_chunks(chunks):
     """Analyze chunk quality and statistics."""
     if not chunks:
@@ -127,3 +226,29 @@ def get_chunk_summary(chunks, max_chunks=5):
             'last_sentence': words[-20:] if len(words) >= 20 else words
         })
     return summary
+
+def chunk_document(text, max_tokens=500, overlap=100, preserve_structure=True):
+    """Main function to chunk a document"""
+    if preserve_structure:
+        # Try to preserve document structure
+        chunks = chunk_text(text, max_tokens, overlap)
+    else:
+        # Simple sentence-based chunking
+        chunks = chunk_by_sentences(text, max_tokens, overlap)
+    
+    # Post-process chunks to ensure quality
+    processed_chunks = []
+    for chunk in chunks:
+        # Remove any duplicate whitespace
+        chunk = re.sub(r'\s+', ' ', chunk).strip()
+        
+        # Ensure chunk has meaningful content
+        if len(chunk.split()) >= 50 and len(chunk) > 200:
+            processed_chunks.append(chunk)
+    
+    return processed_chunks
+
+# For backward compatibility
+def chunk_document(text):
+    """Wrapper for backward compatibility"""
+    return chunk_text(text, max_tokens=500, overlap=100)
