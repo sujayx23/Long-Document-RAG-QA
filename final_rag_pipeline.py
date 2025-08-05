@@ -452,11 +452,26 @@ class FinalRAGPipeline:
         return answer
     
     def answer_question(self, question: str) -> Dict:
-        """Main pipeline with better extraction"""
+        """Main pipeline with better extraction and improved synthesis for Level 4/5"""
         print(f"\nQ: {question}")
         
         # Get relevant chunks
-        chunks = self.get_best_chunks(question)
+        # For Level 4/5, use more context
+        is_level_4 = any(
+            kw in question.lower() for kw in [
+                "evidence", "ablation", "trade-off", "tradeoff", "architectural choices", "implementations", "speed and memory"
+            ]
+        )
+        is_level_5 = any(
+            kw in question.lower() for kw in [
+                "limitations", "evaluation methodology", "bias", "not adequately addressed", "obstacles", "unsolved", "challenges"
+            ]
+        )
+        
+        if is_level_4 or is_level_5:
+            chunks = self.get_best_chunks(question, k=30)  # Use more chunks for context
+        else:
+            chunks = self.get_best_chunks(question)
         
         if not chunks:
             print("No relevant chunks found!")
@@ -466,38 +481,32 @@ class FinalRAGPipeline:
                 'chunks_used': 0
             }
         
-        # Try specific extractors in order
         answer = None
-        
-        # Try factual extraction first
-        answer = self.extract_answer_from_chunks(question, chunks)
-        
-        # Try relationship extraction
-        if not answer:
-            answer = self.extract_relationship_answer(question, chunks)
-        
-        # Try evidence extraction
-        if not answer:
-            answer = self.extract_evidence_answer(question, chunks)
-        
-        # Try limitation extraction
-        if not answer:
-            answer = self.extract_limitation_answer(question, chunks)
-        
-        # Fallback to synthesis
-        if not answer:
-            print("Using synthesis...")
-            answer = self.synthesize_answer(question, chunks)
+        # For Level 4/5, always use synthesis with a specificity-focused prompt
+        if is_level_4 or is_level_5:
+            instruction = (
+                "Answer the question as specifically and directly as possible, using only information from the context."
+            )
+            answer = self.synthesize_answer(question, chunks, instruction=instruction)
+        else:
+            # Try specific extractors in order
+            answer = self.extract_answer_from_chunks(question, chunks)
+            if not answer:
+                answer = self.extract_relationship_answer(question, chunks)
+            if not answer:
+                answer = self.extract_evidence_answer(question, chunks)
+            if not answer:
+                answer = self.extract_limitation_answer(question, chunks)
+            if not answer:
+                print("Using synthesis...")
+                answer = self.synthesize_answer(question, chunks)
         
         # Post-process
         answer = self.post_process_answer(answer)
-        
-        # Final check - only replace if answer is empty or very short
-        if not answer or (len(answer.strip()) < 3 and answer.strip() not in ["1.10 BPC", "512"]):
+        # Final check - only replace if answer is empty or clearly irrelevant
+        if not answer or answer.strip().lower() in ["unable to extract a clear answer from the available information.", "no answer found", "none"]:
             answer = "Unable to extract a clear answer from the available information."
-        
         print(f"A: {answer}")
-        
         return {
             'question': question,
             'answer': answer,
