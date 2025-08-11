@@ -1,0 +1,150 @@
+Level 1 (Factual): What is the maximum sequence length that Longformer can process?
+Answer: 4,096 tokens long (8 times longer than BERT)
+Quality: EXCELLENT - Specific sequence length mentioned
+Time: 12.37s
+
+Level 1 (Factual): What is the BPC score achieved by Longformer on the enwik8 dataset?
+Answer: 1.880 BPC reported on the RoBERTa paper on their corpus
+Quality: GOOD - Mentions BPC
+Time: 12.05s
+
+Level 1 (Factual): How many attention heads does Longformer use?
+Answer: 512 position embeddings from RoBERTa multiple times as analysis of BERT's attention heads shows a strong learned bias to attending to local context, including the previous or next token (Clark et al., 2019)
+Quality: EXCELLENT - Specific number of heads mentioned
+Time: 20.85s
+
+Level 1 (Factual): What is the window size used in Longformer's sliding window attention?
+Answer: 512
+Quality: EXCELLENT - Specific window size mentioned
+Time: 8.00s
+
+Level 1 (Factual): What is the BPC score on text8 dataset?
+Answer: 1.10 BPC
+Quality: EXCELLENT - Specific BPC score mentioned
+Time: 8.02s
+
+Level 1 (Factual): How many tokens can Longformer process compared to BERT?
+Answer: 4,096 tokens (8 times BERT's 512)
+Quality: EXCELLENT - Compares to BERT
+Time: 7.25s
+
+Level 1 (Factual): What is the base model architecture that Longformer extends?
+Answer: RoBERTa model pretrained when only unfreezing the additional position embeddings, showing that Longformer can learn to use long range context in task specific fine-tuning with large training datasets such as Wiki Hop.
+Quality: EXCELLENT - Mentions base model
+Time: 20.41s
+
+Level 1 (Factual): What is the character-level language modeling dataset used?
+Answer: text8 and enwik8 benchmark datasets
+Quality: EXCELLENT - Mentions dataset
+Time: 10.52s
+
+Level 1 (Factual): What is the maximum sequence length for BERT?
+Answer: 4,096 tokens long (8 times longer than BERT)
+Quality: EXCELLENT - Specific sequence length mentioned
+Time: 10.96s
+
+Level 1 (Factual): What is the position embedding size in RoBERTa?
+Answer: 512 position embeddings from RoBERTa multiple times as analysis of BERT's attention heads shows a strong learned bias to attending to local context, including the previous or next token (Clark et al., 2019)
+Quality: EXCELLENT - Specific embedding size mentioned
+Time: 18.01s
+
+Level 2 (Conceptual): What is the difference between local and global attention in Longformer?
+Answer: Local attention focuses on neighboring tokens within a window, while global attention allows specific tokens (like [CLS]) to attend to all positions, enabling both local context and global document understanding
+Quality: GOOD - Mentions attention types
+Time: 7.66s
+
+Level 2 (Conceptual): How does Longformer handle position embeddings for sequences longer than 512 tokens?
+Answer: Longformer extends position embeddings beyond 512 tokens by copying RoBERTa's 512 position embeddings multiple times, allowing the model to handle longer sequences
+Quality: EXCELLENT - Explains position embedding extension
+Time: 7.13s
+
+Level 2 (Conceptual): What is the purpose of the sliding window attention mechanism?
+Answer: The sliding window attention mechanism reduces computational complexity from O(n²) to O(n) by limiting attention to a fixed window size, making it efficient for long sequences
+Quality: EXCELLENT - Explains efficiency purpose
+Time: 7.12s
+
+Level 2 (Conceptual): How does Longformer compare to standard self-attention in terms of memory usage?
+Answer: Longformer can learn to use long range context in task specific fine-tuning with large training datasets such as Wiki Hop.
+Quality: POOR - No memory comparison
+Time: 18.00s
+
+Level 2 (Conceptual): What is the difference between sliding window and dilated sliding window attention?
+Answer: Sliding window attends to neighboring tokens while dilated sliding window has gaps for larger receptive field
+Quality: EXCELLENT - Explains dilated difference
+Time: 7.57s
+
+Level 2 (Conceptual): How does Longformer extend position embeddings beyond the 512 token limit?
+Answer: Longformer extends position embeddings beyond 512 tokens by copying RoBERTa's 512 position embeddings multiple times, allowing the model to handle longer sequences
+Quality: EXCELLENT - Explains position embedding extension
+Time: 7.12s
+
+Level 2 (Conceptual): What is the role of global attention tokens in Longformer?
+Answer: allows Longformer to build full sequence representations for prediction
+Quality: POOR - No global attention explanation
+Time: 10.66s
+
+Level 2 (Conceptual): How does the attention pattern in Longformer differ from traditional transformers?
+Answer: for Longformer, the dilated sliding window attention computes only a fixed number of the diagonals of QK T.
+Quality: GOOD - Mentions attention
+Time: 14.64s
+
+Level 2 (Conceptual): What is the purpose of the [CLS] token in Longformer's global attention?
+Answer: The [CLS] token in Longformer's global attention is used to encode inductive bias about the task.
+Quality: EXCELLENT - Explains CLS token role
+Time: 15.73s
+
+Level 2 (Conceptual): How does Longformer handle the quadratic complexity problem?
+Answer: Longformer addresses quadratic complexity by sparsifying the attention matrix using sliding window patterns, reducing computation from O(n²) to O(n) while maintaining effectiveness
+Quality: GOOD - Mentions complexity
+Time: 7.23s
+
+Level 3 (Analytical): How does the staged training approach contribute to Longformer's performance on long documents?
+Answer: Staged training contributes to Longformer's performance by gradually adapting the model to longer sequences, improving convergence and preventing training instability
+Quality: GOOD - Mentions staged training
+Time: 7.13s
+
+Level 3 (Analytical): What is the relationship between window size and computational efficiency in Longformer?
+Answer: Window size affects computational efficiency by controlling the attention span - larger windows capture more context but require more computation, while smaller windows are more efficient but have limited receptive field
+Quality: EXCELLENT - Explains efficiency relationship
+Time: 6.97s
+
+Level 3 (Analytical): How does Longformer's attention pattern design address the quadratic complexity problem?
+Answer: Longformer addresses quadratic complexity by sparsifying the attention matrix using sliding window patterns, reducing computation from O(n²) to O(n) while maintaining effectiveness
+Quality: EXCELLENT - Explains complexity reduction
+Time: 7.53s
+
+Level 3 (Analytical): How does character-level language modeling validate Longformer's long sequence capabilities?
+Answer: Longformer achieves state-of-the-art results on the character-level language modeling tasks of text8 and enwik8.
+Quality: GOOD - Mentions character-level
+Time: 17.37s
+
+Level 3 (Analytical): How does the attention pattern affect computational efficiency?
+Answer: Sliding window attention reduces computation from O(n²) to O(n) while maintaining effectiveness
+Quality: EXCELLENT - Explains efficiency improvement
+Time: 7.16s
+
+Level 3 (Analytical): How does staged training improve model convergence?
+Answer: using fp 16 in attention operation results in floating point overflow and Na Ns in later stages of training
+Quality: GOOD - Mentions training
+Time: 14.78s
+
+Level 3 (Analytical): How does Longformer maintain effectiveness while reducing computational cost?
+Answer: When pretrained, Longformer consistently outperforms RoBERTa on long document tasks and sets new state-of-the-art results on Wik-i Hop and Trivia QA.
+Quality: POOR - No effectiveness-cost explanation
+Time: 18.40s
+
+Level 3 (Analytical): How does the sliding window mechanism balance context and efficiency?
+Answer: The sliding window attention mechanism reduces computational complexity from O(n²) to O(n) by limiting attention to a fixed window size, making it efficient for long sequences
+Quality: GOOD - Mentions sliding window
+Time: 7.71s
+
+Level 3 (Analytical): How does Longformer's design enable processing of documents with thousands of tokens?
+Answer: attention mechanism that scales linearly with sequence length
+Quality: POOR - No long document explanation
+Time: 12.48s
+
+Level 3 (Analytical): How does the combination of local and global attention improve document understanding?
+Answer: The additional projections provide flexibility to model the different types of attention, which we show is critical for best performance on downstream tasks.
+Quality: POOR - No attention combination explanation
+Time: 12.74s
+

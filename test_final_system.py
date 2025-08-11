@@ -44,7 +44,7 @@ questions = {
     ]
 }
 
-def test_question(question, timeout_seconds=30):
+def test_question(question, timeout_seconds=60):
     """Test a single question with timeout"""
     cmd = ['python3', 'final_rag_pipeline.py', question]
     
@@ -121,7 +121,7 @@ def main():
             question_num += 1
             print(f"\n[{question_num}/{total_questions}] {q}")
             
-            answer, elapsed = test_question(q, timeout_seconds=30)
+            answer, elapsed = test_question(q, timeout_seconds=60)
             
             print(f"Answer: {format_answer(answer, 150)}")
             

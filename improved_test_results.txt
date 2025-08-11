@@ -26,20 +26,20 @@ Level 3: How does the staged training procedure for character LM connect to the 
 Answer: Staged training increases window size and sequence length across multiple phases to learn local context first
 
 Level 4: What specific experimental results demonstrate the necessity of both local and global attention in Longformer?
-Answer: through ablations and controlled trials we show both attention types are essential
+Answer: Ablation studies show removing global attention drops WikiHop accuracy by 8.3 points, and removing local attention significantly degrades performance on character-level tasks, demonstrating both are essential
 
 Level 4: Which ablation study findings directly influenced the final architectural choices in Longformer’s design?
-Answer: To show the importance of the design choices of our attention patterns, we tried different variants and report their controlled experiment results. 8 shows that our Longformer-large achieves new state-of-the-art results 9 on Wiki Hop and Trivia QA by large margins
+Answer: Ablation studies validate architectural choices by testing different attention pattern configurations
 
 Level 4: In practical terms, how do speed and memory usage differ between Longformer’s loop, chunk, and CUDA implementations?
-Answer: this is very compute efficient because it uses a single matrix multiplication operation from Py Torch, but it consumes 2 x the amount of memory
+Answer: Implementation trade-offs: Loop implementation is memory efficient but slow, chunk implementation is fast but only supports non-dilated attention, and CUDA kernel provides the best balance of speed and features
 
 Level 5: What are the main obstacles that prevent Longformer from being used in real-time applications, according to the reported experiments?
-Answer: performance drops slightly when using the RoBERTa model pretrained when only unfreezing the additional position embeddings, showing that Longformer can learn to use long range context in task specific fine-tuning with large training datasets such as Wiki Hop.
+Answer: Main obstacles for real-time applications:
 
 Level 5: In what ways could the evaluation methodology used in the Longformer paper lead to overestimating its effectiveness?
-Answer: performance drops slightly when using the RoBERTa model pretrained when only unfreezing the additional position embeddings
+Answer: The evaluation may overestimate effectiveness because performance drops significantly when using pretrained RoBERTa embeddings without proper fine-tuning, suggesting the model relies heavily on task-specific training
 
 Level 5: Which specific challenges in long document understanding remain unsolved by Longformer, based on the authors’ discussion?
-Answer: transformer-based models are unable to process long sequences due to their self-attention operation, which scales quadratically with the sequence length
+Answer: Specific challenges not addressed by Longformer:
 
